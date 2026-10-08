@@ -1,0 +1,19 @@
+{
+  "name": "skillswap-platform",
+  "version": "1.0.0",
+  "description": "SkillSwap — Peer-to-peer learning platform where people exchange skills instead of money",
+  "main": "serve.js",
+  "scripts": {
+    "start": "node serve.js",
+    "dev": "node serve.js"
+  },
+  "keywords": [
+    "skillswap",
+    "peer-to-peer",
+    "learning",
+    "knowledge-economy",
+    "education"
+  ],
+  "author": "SkillSwap Team",
+  "license": "MIT"
+}

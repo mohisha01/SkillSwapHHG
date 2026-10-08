@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillSwap — Learn From People Around You | Peer-to-Peer Knowledge Exchange</title>
+  <meta name="description" content="Exchange skills instead of money. Teach what you love, earn skill credits, and learn from passionate peers in your community.">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Lucide Icons for ultra-crisp modern interface -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       Global Navigation Bar
+       ========================================================================== -->
+  <header class="navbar" id="main-nav">
+    <div class="nav-container">
+      <a href="#landing" class="nav-brand" onclick="app.navigate('landing')">
+        <div class="brand-icon">
+          <i data-lucide="repeat"></i>
+        </div>
+        <span>Skill<span class="text-gradient">Swap</span></span>
+        <span class="brand-tag">P2P</span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="#landing" class="nav-link active" data-view="landing" onclick="app.navigate('landing')"><i data-lucide="home"></i> Home</a></li>
+          <li><a href="#discover" class="nav-link" data-view="discover" onclick="app.navigate('discover')"><i data-lucide="compass"></i> Discover</a></li>
+          <li><a href="#matches" class="nav-link" data-view="matches" onclick="app.navigate('matches')"><i data-lucide="sparkles"></i> AI Matches <span class="badge-counter" id="nav-match-count">3</span></a></li>
+          <li><a href="#community" class="nav-link" data-view="community" onclick="app.navigate('community')"><i data-lucide="users"></i> Community</a></li>
+          <li><a href="#learning-paths" class="nav-link" data-view="learning-paths" onclick="app.navigate('learning-paths')"><i data-lucide="git-branch"></i> Learning Paths</a></li>
+          <li><a href="#leaderboard" class="nav-link" data-view="leaderboard" onclick="app.navigate('leaderboard')"><i data-lucide="trophy"></i> Leaderboard</a></li>
+          <li><a href="#dashboard" class="nav-link" data-view="dashboard" onclick="app.navigate('dashboard')"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
+          <li><a href="#messages" class="nav-link" data-view="messages" onclick="app.navigate('messages')"><i data-lucide="message-square"></i> Messages</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Skill Credit Wallet Pill -->
+        <button class="wallet-pill" id="nav-wallet-pill" onclick="app.navigate('credits')" title="Open Skill Credit Wallet">
+          <span class="spark-icon">⚡</span>
+          <span id="nav-credit-balance">140</span>
+          <span>Credits</span>
+        </button>
+
+        <!-- Notification Bell with Dropdown -->
+        <div style="position: relative;">
+          <button class="notif-btn" id="notif-btn" onclick="app.toggleNotifDropdown()" title="Notifications">
+            <i data-lucide="bell"></i>
+            <span class="notif-badge" id="notif-badge"></span>
+          </button>
+          
+          <div class="dropdown-panel" id="notif-dropdown">
+            <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+              <h4 style="font-size: 0.95rem; font-weight: 700;">Notifications</h4>
+              <button class="btn btn-sm" style="color: var(--primary); font-size: 0.78rem;" onclick="app.markAllNotifsRead()">Mark all as read</button>
+            </div>
+            <div id="notif-items-list" style="max-height: 340px; overflow-y: auto;">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Active User Profile Pill & Switcher -->
+        <div style="position: relative;">
+          <button class="user-profile-btn" id="user-profile-btn" onclick="app.toggleUserDropdown()" title="Switch User or View Account">
+            <img src="" alt="Active User" class="user-avatar-tiny" id="nav-user-avatar">
+            <span class="user-name-label" id="nav-user-name">Maya Lin</span>
+            <i data-lucide="chevron-down" style="font-size: 0.9rem; color: var(--text-dim);"></i>
+          </button>
+
+          <div class="dropdown-panel" id="user-dropdown">
+            <div style="padding: 1.25rem; border-bottom: 1px solid var(--border-subtle); text-align: center;">
+              <img src="" alt="User" id="dropdown-user-avatar" style="width: 54px; height: 54px; border-radius: 50%; margin: 0 auto 0.5rem; border: 2px solid var(--primary); object-fit: cover;">
+              <h4 id="dropdown-user-name" style="font-size: 1rem; font-weight: 700;">Maya Lin</h4>
+              <p id="dropdown-user-role" style="font-size: 0.78rem; color: var(--text-muted);">React Specialist</p>
+              <div style="margin-top: 0.5rem;">
+                <span class="badge badge-gold" id="dropdown-user-badge">Top Mentor</span>
+              </div>
+            </div>
+            <div style="padding: 0.75rem 1rem;">
+              <p style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700; margin-bottom: 0.5rem;">Switch Demo Persona (Test Reciprocal Matching)</p>
+              <div id="persona-switchers-list" style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+            <div style="padding: 0.75rem 1rem; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 0.35rem;">
+              <button class="btn btn-secondary btn-sm" style="width: 100%; justify-content: flex-start;" onclick="app.openEditPhotoModal()"><i data-lucide="camera"></i> Change Profile Photo</button>
+              <button class="btn btn-secondary btn-sm" style="width: 100%; justify-content: flex-start;" onclick="app.openProfileModal(app.activeUser.id)"><i data-lucide="user"></i> View My Profile</button>
+              <button class="btn btn-secondary btn-sm" style="width: 100%; justify-content: flex-start;" onclick="app.openAuthModal('signup')"><i data-lucide="user-plus"></i> Register New User</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="mobile-nav-toggle" onclick="app.toggleMobileNav()">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Drawer -->
+  <div id="mobile-menu-drawer" style="display: none; background: var(--bg-secondary); border-bottom: 1px solid var(--border-subtle); padding: 1rem 1.5rem;">
+    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem;">
+      <li><a href="#landing" class="nav-link" onclick="app.navigate('landing'); app.toggleMobileNav();"><i data-lucide="home"></i> Home</a></li>
+      <li><a href="#discover" class="nav-link" onclick="app.navigate('discover'); app.toggleMobileNav();"><i data-lucide="compass"></i> Discover</a></li>
+      <li><a href="#matches" class="nav-link" onclick="app.navigate('matches'); app.toggleMobileNav();"><i data-lucide="sparkles"></i> AI Matches</a></li>
+      <li><a href="#community" class="nav-link" onclick="app.navigate('community'); app.toggleMobileNav();"><i data-lucide="users"></i> Community</a></li>
+      <li><a href="#learning-paths" class="nav-link" onclick="app.navigate('learning-paths'); app.toggleMobileNav();"><i data-lucide="git-branch"></i> Learning Paths</a></li>
+      <li><a href="#leaderboard" class="nav-link" onclick="app.navigate('leaderboard'); app.toggleMobileNav();"><i data-lucide="trophy"></i> Leaderboard</a></li>
+      <li><a href="#dashboard" class="nav-link" onclick="app.navigate('dashboard'); app.toggleMobileNav();"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
+      <li><a href="#messages" class="nav-link" onclick="app.navigate('messages'); app.toggleMobileNav();"><i data-lucide="message-square"></i> Messages</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content Container for Dynamic Single Page Views -->
+  <main id="app-viewport">
+
+    <!-- ========================================================================
+         VIEW 1: LANDING PAGE
+         ======================================================================== -->
+    <section id="view-landing" class="view-panel">
+      <!-- Hero Section -->
+      <div class="hero-section">
+        <div class="container">
+          <div class="hero-grid">
+            <div class="hero-content">
+              <div class="hero-pill">
+                <span class="dot"></span>
+                <span>The Peer-to-Peer Knowledge Economy</span>
+              </div>
+
+              <h1 class="hero-title">
+                Learn a Skill. <br>
+                Teach a Skill. <br>
+                <span class="text-gradient">Grow Together.</span>
+              </h1>
+
+              <p class="hero-desc">
+                Exchange knowledge directly with passionate people around you without paying money. 
+                Teach what you love, earn <strong>Skill Credits</strong>, and unlock 1-on-1 mentorship in anything you want to master.
+              </p>
+
+              <div class="hero-cta-group">
+                <button class="btn btn-primary btn-lg" onclick="app.navigate('discover')">
+                  <i data-lucide="search"></i> Find a Skill
+                </button>
+                <button class="btn btn-secondary btn-lg" onclick="app.openOfferSkillModal()">
+                  <i data-lucide="award"></i> Offer a Skill
+                </button>
+                <button class="btn btn-accent btn-lg" onclick="app.navigate('matches')">
+                  <i data-lucide="sparkles"></i> AI Skill Matcher
+                </button>
+              </div>
+
+              <div class="hero-stats-banner">
+                <div class="stat-item">
+                  <span class="stat-num">4,850+</span>
+                  <span class="stat-label">Skills Swapped</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num">12,400+</span>
+                  <span class="stat-label">Active Peers</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num">98.4%</span>
+                  <span class="stat-label">5-Star Feedback</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num">$0</span>
+                  <span class="stat-label">Money Spent</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Interactive Exchange Card Simulation -->
+            <div class="hero-visual">
+              <div class="hero-visual-card">
+                <div class="hero-card-header">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="sparkles" style="color: var(--primary);"></i>
+                    <span style="font-weight: 700; font-size: 0.95rem;">Live Reciprocal Match</span>
+                  </div>
+                  <div class="match-status-badge">
+                    <i data-lucide="check-circle-2" style="font-size: 0.85rem;"></i> 96% Match
+                  </div>
+                </div>
+
+                <div class="swap-flow-duo">
+                  <div class="swap-actor-box">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" alt="Maya" class="actor-avatar">
+                    <span class="actor-name">Maya Lin</span>
+                    <span class="actor-pill-teach">Teaches: React & TS</span>
+                    <span class="actor-pill-learn">Wants: UI/UX</span>
+                  </div>
+
+                  <div class="swap-exchange-nexus">
+                    <div class="exchange-circle-btn">
+                      <i data-lucide="repeat"></i>
+                    </div>
+                    <span class="swap-currency-rate">10 ⚡ / Hr</span>
+                  </div>
+
+                  <div class="swap-actor-box">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="David" class="actor-avatar">
+                    <span class="actor-name">David Chen</span>
+                    <span class="actor-pill-teach">Teaches: UI/UX Design</span>
+                    <span class="actor-pill-learn">Wants: React</span>
+                  </div>
+                </div>
+
+                <div class="hero-explanation-box">
+                  <strong>How the Swap Happens:</strong> Maya spends 1 hour coaching David on React components (+10 ⚡ earned). Maya then uses her 10 credits to book David's UI/UX Figma masterclass. <em>Zero dollars transacted.</em>
+                </div>
+
+                <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem;">
+                  <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="app.openRequestSwapModal('user-david')">
+                    <i data-lucide="repeat"></i> Try This Swap
+                  </button>
+                  <button class="btn btn-secondary btn-sm" onclick="app.openProfileModal('user-david')">
+                    View Profile
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Platform Formula: Teach -> Earn -> Learn -> Grow -->
+      <section class="formula-banner">
+        <div class="container">
+          <div class="section-header" style="margin-bottom: 2.5rem;">
+            <span class="section-tag">Knowledge As Currency</span>
+            <h2 class="section-title">How SkillSwap Works</h2>
+            <p class="section-desc">A frictionless cycle of mutual empowerment and zero monetary barriers.</p>
+          </div>
+
+          <div class="formula-grid">
+            <div class="formula-step">
+              <div class="formula-step-icon">
+                <i data-lucide="book-open"></i>
+              </div>
+              <div class="formula-step-title">
+                <span>1. Teach</span>
+                <span class="step-num">STEP 01</span>
+              </div>
+              <p class="formula-step-desc">Share skills you excel at. Host 1-on-1 virtual or in-person sessions tailored to enthusiastic learners.</p>
+            </div>
+
+            <div class="formula-step">
+              <div class="formula-step-icon">
+                <i data-lucide="zap"></i>
+              </div>
+              <div class="formula-step-title">
+                <span>2. Earn Credits</span>
+                <span class="step-num">STEP 02</span>
+              </div>
+              <p class="formula-step-desc">Every hour taught deposits <strong>10 Skill Credits</strong> into your personal wallet upon completion.</p>
+            </div>
+
+            <div class="formula-step">
+              <div class="formula-step-icon">
+                <i data-lucide="graduation-cap"></i>
+              </div>
+              <div class="formula-step-title">
+                <span>3. Learn</span>
+                <span class="step-num">STEP 03</span>
+              </div>
+              <p class="formula-step-desc">Spend your earned credits to book sessions with top mentors across programming, design, and more.</p>
+            </div>
+
+            <div class="formula-step">
+              <div class="formula-step-icon">
+                <i data-lucide="trending-up"></i>
+              </div>
+              <div class="formula-step-title">
+                <span>4. Grow</span>
+                <span class="step-num">STEP 04</span>
+              </div>
+              <p class="formula-step-desc">Climb the leaderboard, unlock prestigious mentor badges, and expand your career without expensive bootcamps.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Popular Skills Section -->
+      <section class="section-padding">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-tag">Trending Topics</span>
+            <h2 class="section-title">Explore Popular Skills</h2>
+            <p class="section-desc">From full-stack coding to cinematic videography, discover mentors ready to swap today.</p>
+          </div>
+
+          <div class="skills-category-grid" id="popular-skills-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials Section -->
+      <section class="section-padding" style="background: rgba(15, 21, 38, 0.4); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-tag">Real Stories</span>
+            <h2 class="section-title">Community Testimonials</h2>
+            <p class="section-desc">See how peers are accelerating their dreams by trading knowledge.</p>
+          </div>
+
+          <div class="testimonials-grid">
+            <div class="testimonial-card">
+              <span class="testimonial-exchange-pill">Swapped: React for UI/UX Design</span>
+              <p class="testimonial-quote">"I spent months stuck on portfolio design. In two 1-hour swaps with David, he overhauled my typography and spacing while I taught him React hooks. Best peer platform ever!"</p>
+              <div class="testimonial-user">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" alt="Maya" class="t-avatar">
+                <div class="t-info">
+                  <h4>Maya Lin</h4>
+                  <p>Frontend Engineer • San Francisco</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial-card">
+              <span class="testimonial-exchange-pill">Swapped: DaVinci Resolve for Python AI</span>
+              <p class="testimonial-quote">"I needed automated scripts for processing 4K video footage. Elena taught me Python file manipulation and in return I graded her documentary color palette. 100% free!"</p>
+              <div class="testimonial-user">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Marcus" class="t-avatar">
+                <div class="t-info">
+                  <h4>Marcus Vance</h4>
+                  <p>Cinematographer • Los Angeles</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial-card">
+              <span class="testimonial-exchange-pill">Swapped: Street Photography for SEO</span>
+              <p class="testimonial-quote">"The skill credit economy feels so natural and motivating. You don't hesitate to reach out because everyone is here to teach and learn in good faith."</p>
+              <div class="testimonial-user">
+                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80" alt="Kenji" class="t-avatar">
+                <div class="t-info">
+                  <h4>Kenji Sato</h4>
+                  <p>Photographer • Seattle</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Join Banner -->
+      <div class="container section-padding">
+        <div class="landing-cta-banner">
+          <div class="cta-text-content">
+            <h2>Ready to turn your knowledge into currency?</h2>
+            <p>Join over 12,000+ creators, developers, designers, and thinkers exchanging skills daily. Get 50 Welcome Credits upon signup!</p>
+          </div>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button class="btn btn-primary btn-lg" onclick="app.openAuthModal('signup')">
+              <i data-lucide="sparkles"></i> Sign Up & Get 50 Credits
+            </button>
+            <button class="btn btn-secondary btn-lg" onclick="app.navigate('discover')">
+              Browse Mentors
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 2: USER DASHBOARD
+         ======================================================================== -->
+    <section id="view-dashboard" class="view-panel" style="display: none;">
+      <div class="container dashboard-view">
+        <!-- Dashboard Welcome Banner -->
+        <div class="dash-welcome-banner">
+          <div class="dash-user-welcome">
+            <div class="avatar-container-editable" onclick="app.openEditPhotoModal()" title="Change Profile Photo">
+              <img src="" alt="User" class="dash-avatar-large" id="dash-user-avatar">
+              <button class="avatar-edit-badge" type="button" aria-label="Edit Profile Photo"><i data-lucide="camera"></i></button>
+            </div>
+            <div class="dash-welcome-meta">
+              <h1>Welcome back, <span id="dash-user-name">Maya</span>! 👋</h1>
+              <p id="dash-user-title">Senior Frontend Engineer & React Specialist • <span id="dash-user-location">San Francisco</span></p>
+            </div>
+          </div>
+          <div class="dash-quick-actions">
+            <button class="btn btn-accent btn-sm" onclick="app.navigate('matches')">
+              <i data-lucide="sparkles"></i> View AI Matches
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="app.openOfferSkillModal()">
+              <i data-lucide="plus"></i> Add Skill to Teach
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="app.navigate('requests')">
+              <i data-lucide="inbox"></i> Swap Requests (<span id="dash-pending-req-count">2</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- 3-Column Metrics Row -->
+        <div class="dash-metrics-grid">
+          <!-- Wallet Card -->
+          <div class="glass-card wallet-card-highlight">
+            <div class="wallet-head">
+              <span class="badge badge-gold"><i data-lucide="zap"></i> Knowledge Wallet</span>
+              <button class="btn btn-sm" style="color: #fbbf24; text-decoration: underline;" onclick="app.navigate('credits')">History →</button>
+            </div>
+            <div class="wallet-big-balance">
+              <span class="balance-num" id="dash-credit-balance">140</span>
+              <span class="balance-unit">Skill Credits</span>
+            </div>
+            <div class="wallet-breakdown-bar">
+              <div class="breakdown-stat">
+                <span class="b-label">Total Earned</span>
+                <span class="b-val" id="dash-credits-earned">+260 ⚡</span>
+              </div>
+              <div class="breakdown-stat">
+                <span class="b-label">Total Spent</span>
+                <span class="b-val" id="dash-credits-spent">-120 ⚡</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Swaps & Hours Taught Card -->
+          <div class="glass-card">
+            <div class="dash-card-header" style="margin-bottom: 0.75rem;">
+              <span class="badge badge-emerald"><i data-lucide="repeat"></i> Swaps Completed</span>
+              <span class="badge badge-subtle" id="dash-rank-badge">Rank #5</span>
+            </div>
+            <div style="font-family: var(--font-display); font-size: 2.8rem; font-weight: 800; color: #fff;" id="dash-swaps-count">
+              26
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+              <strong id="dash-hours-taught">32</strong> hours of community instruction provided.
+            </p>
+          </div>
+
+          <!-- Mentor Rating Card -->
+          <div class="glass-card">
+            <div class="dash-card-header" style="margin-bottom: 0.75rem;">
+              <span class="badge badge-primary"><i data-lucide="star"></i> Mentor Reputation</span>
+              <span class="badge badge-gold" id="dash-mentor-badge">Top Mentor</span>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+              <span style="font-family: var(--font-display); font-size: 2.8rem; font-weight: 800; color: #fbbf24;" id="dash-rating-val">4.95</span>
+              <span style="color: var(--text-muted); font-size: 0.9rem;">/ 5.0</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+              Based on <strong id="dash-reviews-count">38</strong> verified peer swap reviews.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2-Column Dashboard Details -->
+        <div class="dash-content-grid">
+          <!-- Left Column: Skills Teach & Learn -->
+          <div class="dash-column">
+            <!-- Skills I Teach -->
+            <div class="glass-card">
+              <div class="dash-card-header">
+                <h3><i data-lucide="book-open" style="color: var(--primary);"></i> Skills I Teach</h3>
+                <button class="btn btn-secondary btn-sm" onclick="app.openOfferSkillModal()">+ Add New</button>
+              </div>
+              <div class="skills-list-mini" id="dash-skills-teach-list">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Skills I Want to Learn -->
+            <div class="glass-card">
+              <div class="dash-card-header">
+                <h3><i data-lucide="compass" style="color: var(--currency-gold);"></i> Skills I Want to Learn</h3>
+                <button class="btn btn-secondary btn-sm" onclick="app.openAddLearningSkillModal()">+ Add Goal</button>
+              </div>
+              <div class="skills-list-mini" id="dash-skills-learn-list">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Recommended Matches Spotlight -->
+            <div class="glass-card highlight">
+              <div class="dash-card-header">
+                <h3><i data-lucide="sparkles" style="color: var(--accent-emerald);"></i> Top AI Reciprocal Match</h3>
+                <button class="btn btn-primary btn-sm" onclick="app.navigate('matches')">All Matches →</button>
+              </div>
+              <div id="dash-top-match-card">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Upcoming Sessions & Activity Feed -->
+          <div class="dash-column">
+            <!-- Upcoming Learning Sessions -->
+            <div class="glass-card">
+              <div class="dash-card-header">
+                <h3><i data-lucide="calendar" style="color: var(--accent-cyan);"></i> Upcoming Sessions</h3>
+                <button class="btn btn-secondary btn-sm" onclick="app.openScheduleSessionModal()">+ Schedule</button>
+              </div>
+              <div id="dash-sessions-list">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Recent Activity Feed -->
+            <div class="glass-card">
+              <div class="dash-card-header">
+                <h3><i data-lucide="activity" style="color: #ec4899;"></i> Recent Activity</h3>
+              </div>
+              <div class="activity-feed-list" id="dash-activity-list">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 3: SKILL DISCOVERY PAGE
+         ======================================================================== -->
+    <section id="view-discover" class="view-panel" style="display: none;">
+      <div class="container discover-view">
+        <div class="section-header" style="text-align: left; max-width: 100%; margin-bottom: 2rem;">
+          <span class="section-tag"><i data-lucide="compass"></i> Peer Directory</span>
+          <h1 class="section-title">Discover Mentors & Skills</h1>
+          <p class="section-desc">Connect with practitioners across programming, product design, marketing, and media.</p>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="search-filter-box">
+          <div class="search-input-wrapper">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="discover-search-input" class="search-input-main" placeholder="Search by skill (React, Python, UI/UX, DaVinci), mentor name, or bio keyword..." oninput="app.handleSearchChange()">
+          </div>
+
+          <div class="filter-pills-row">
+            <select id="filter-level" class="filter-select" onchange="app.handleFilterChange()">
+              <option value="all">All Levels</option>
+              <option value="Advanced">Advanced Only</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Beginner">Beginner Friendly</option>
+            </select>
+
+            <select id="filter-format" class="filter-select" onchange="app.handleFilterChange()">
+              <option value="all">Format: Any</option>
+              <option value="Online">Online Sessions</option>
+              <option value="In-person">In-Person Only</option>
+            </select>
+
+            <select id="filter-availability" class="filter-select" onchange="app.handleFilterChange()">
+              <option value="all">Availability: Any Time</option>
+              <option value="Weekend">Weekends</option>
+              <option value="Weekday">Weekday Evenings</option>
+            </select>
+
+            <select id="filter-rating" class="filter-select" onchange="app.handleFilterChange()">
+              <option value="0">Rating: All</option>
+              <option value="4.8">4.8+ Stars</option>
+              <option value="4.9">4.9+ Stars</option>
+            </select>
+
+            <select id="filter-sort" class="filter-select" onchange="app.handleFilterChange()" style="margin-left: auto;">
+              <option value="recommended">Sort: Best Match</option>
+              <option value="rating">Highest Rated</option>
+              <option value="swaps">Most Swaps Completed</option>
+              <option value="hours">Most Hours Taught</option>
+            </select>
+          </div>
+
+          <!-- Category Chips -->
+          <div class="category-filter-chips" id="discover-category-chips">
+            <button class="filter-chip active" data-category="all" onclick="app.setCategoryFilter('all')">All Skills</button>
+            <button class="filter-chip" data-category="Programming" onclick="app.setCategoryFilter('Programming')">💻 Programming</button>
+            <button class="filter-chip" data-category="Design" onclick="app.setCategoryFilter('Design')">🎨 UI/UX & Design</button>
+            <button class="filter-chip" data-category="Video & Media" onclick="app.setCategoryFilter('Video & Media')">🎬 Video & Media</button>
+            <button class="filter-chip" data-category="Marketing" onclick="app.setCategoryFilter('Marketing')">📈 Growth & Marketing</button>
+            <button class="filter-chip" data-category="Photography" onclick="app.setCategoryFilter('Photography')">📷 Photography</button>
+            <button class="filter-chip" data-category="Business" onclick="app.setCategoryFilter('Business')">💼 Business & Speaking</button>
+          </div>
+        </div>
+
+        <!-- Mentors Cards Grid -->
+        <div class="mentors-grid" id="mentors-cards-container">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 4: AI-POWERED MATCHING PAGE
+         ======================================================================== -->
+    <section id="view-matches" class="view-panel" style="display: none;">
+      <div class="container ai-matches-view">
+        <!-- AI Engine Matrix Header -->
+        <div class="ai-engine-banner">
+          <div class="ai-engine-header">
+            <div>
+              <span class="ai-badge-live">
+                <span class="ai-pulse-dot"></span>
+                AI Reciprocal Matching Engine Active
+              </span>
+              <h1 class="section-title" style="margin-top: 0.75rem; margin-bottom: 0.35rem;">
+                Smart Skill Compatibility Matrix
+              </h1>
+              <p class="section-desc" style="max-width: 650px;">
+                Our neural matching algorithm continuously compares <strong>what you can teach</strong> against what others want to learn, and vice versa, creating effortless 2-way swaps.
+              </p>
+            </div>
+            <div style="text-align: right;">
+              <button class="btn btn-primary" onclick="app.refreshAIMatches()">
+                <i data-lucide="rotate-cw"></i> Re-Calculate Matches
+              </button>
+            </div>
+          </div>
+
+          <div class="ai-algorithm-explainer">
+            <div class="ai-node-box">
+              <span class="ai-node-label">Your Offering (Active Persona)</span>
+              <span class="ai-node-value" id="ai-active-teach-summary">React, TypeScript, Next.js</span>
+            </div>
+            <div class="ai-synapse-line">
+              <i data-lucide="repeat"></i>
+              <span class="ai-synapse-text">2-WAY RECIPROCITY</span>
+            </div>
+            <div class="ai-node-box" style="text-align: right;">
+              <span class="ai-node-label">Your Goal (Active Persona)</span>
+              <span class="ai-node-value" id="ai-active-learn-summary">UI/UX Design, Figma</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- List of AI Recommended Matches -->
+        <div class="ai-matches-list" id="ai-matches-list-container">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Custom AI Match Simulator Interactive Sandbox -->
+        <div class="ai-simulator-box">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="cpu" style="color: var(--primary);"></i> AI Skill Swap Sandbox Simulator
+              </h3>
+              <p style="font-size: 0.88rem; color: var(--text-muted);">
+                Test hypothetical swap scenarios: enter any skill you want to offer and any skill you want to learn to compute live matches across the network.
+              </p>
+            </div>
+          </div>
+
+          <div class="sim-input-row">
+            <div>
+              <label class="form-label">Hypothetical Skill You Offer</label>
+              <input type="text" id="sim-offer-input" class="form-input" placeholder="e.g. Python, Blender, Spanish, Guitar...">
+            </div>
+            <div>
+              <label class="form-label">Hypothetical Skill You Want</label>
+              <input type="text" id="sim-want-input" class="form-input" placeholder="e.g. React, UI/UX, SEO, Public Speaking...">
+            </div>
+            <div style="display: flex; align-items: flex-end;">
+              <button class="btn btn-accent" style="height: 48px;" onclick="app.runCustomAISimulation()">
+                <i data-lucide="sparkles"></i> Simulate AI Match
+              </button>
+            </div>
+          </div>
+
+          <div id="sim-result-box" style="display: none; margin-top: 1.5rem; padding: 1.25rem; background: rgba(0,0,0,0.3); border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 5: SKILL SWAP REQUESTS INBOX
+         ======================================================================== -->
+    <section id="view-requests" class="view-panel" style="display: none;">
+      <div class="container requests-view">
+        <div class="section-header" style="text-align: left; max-width: 100%; margin-bottom: 2rem;">
+          <span class="section-tag"><i data-lucide="inbox"></i> Exchange Center</span>
+          <h1 class="section-title">Manage Skill Swap Proposals</h1>
+          <p class="section-desc">Review proposals from peers seeking to trade expertise with you.</p>
+        </div>
+
+        <div class="tabs-navigation-bar">
+          <button class="tab-btn active" data-tab="incoming" onclick="app.switchRequestTab('incoming')">
+            Incoming Requests (<span id="count-incoming-req">2</span>)
+          </button>
+          <button class="tab-btn" data-tab="outgoing" onclick="app.switchRequestTab('outgoing')">
+            Outgoing Requests (<span id="count-outgoing-req">1</span>)
+          </button>
+          <button class="tab-btn" data-tab="completed" onclick="app.switchRequestTab('completed')">
+            Past Swaps History
+          </button>
+        </div>
+
+        <div class="requests-cards-list" id="requests-list-container">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 6: SKILL CREDIT SYSTEM & WALLET
+         ======================================================================== -->
+    <section id="view-credits" class="view-panel" style="display: none;">
+      <div class="container credits-view">
+        <div class="wallet-master-hero">
+          <div class="wallet-hero-left">
+            <span class="badge badge-gold" style="margin-bottom: 0.75rem;">
+              <i data-lucide="zap"></i> Proof of Knowledge Ledger
+            </span>
+            <h1>Skill Credits Wallet</h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              Skill Credits replace monetary transactions. Teach 1 hour to earn 10 credits; spend 10 credits to book 1 hour with any mentor.
+            </p>
+
+            <div class="wallet-balance-display">
+              <span class="balance-num" id="wallet-big-num">140</span>
+              <span class="balance-unit">Available Credits</span>
+            </div>
+
+            <div class="wallet-hero-stats">
+              <div>
+                <span style="font-size: 0.78rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Total Earned (Teaching)</span>
+                <p style="font-size: 1.35rem; font-weight: 800; color: #34d399;" id="wallet-total-earned">+260 ⚡</p>
+              </div>
+              <div>
+                <span style="font-size: 0.78rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Total Spent (Learning)</span>
+                <p style="font-size: 1.35rem; font-weight: 800; color: #fbbf24;" id="wallet-total-spent">-120 ⚡</p>
+              </div>
+              <div>
+                <span style="font-size: 0.78rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Rate Standard</span>
+                <p style="font-size: 1.35rem; font-weight: 800; color: #fff;">10 ⚡ / Hr</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="wallet-hero-right">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.25rem;">
+              The Knowledge Currency Rules
+            </h3>
+            
+            <div class="currency-rule-item">
+              <div class="c-rule-icon earn"><i data-lucide="arrow-down-left"></i></div>
+              <div class="c-rule-text">
+                <h4>Teach 1 Hour → Earn 10 Credits</h4>
+                <p>Host peer sessions and automatically receive credits upon verification.</p>
+              </div>
+            </div>
+
+            <div class="currency-rule-item">
+              <div class="c-rule-icon spend"><i data-lucide="arrow-up-right"></i></div>
+              <div class="c-rule-text">
+                <h4>Learn 1 Hour → Spend 10 Credits</h4>
+                <p>Book 1-on-1 sessions with verified experts in any domain.</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; gap: 0.5rem;">
+              <button class="btn btn-accent btn-sm" style="flex: 1;" onclick="app.simulateCompletedSession()">
+                <i data-lucide="play"></i> Simulate Completing 1 Hr Session (+10 ⚡)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transactions History -->
+        <div class="transactions-table-wrap">
+          <div class="table-filter-bar">
+            <div>
+              <h3 style="font-size: 1.15rem; font-weight: 700;">Credit Ledger & Transaction History</h3>
+              <p style="font-size: 0.82rem; color: var(--text-dim);">Immutable record of verified learning exchanges</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="app.filterTransactions('all')">All</button>
+              <button class="btn btn-secondary btn-sm" onclick="app.filterTransactions('credit')">Earned Only</button>
+              <button class="btn btn-secondary btn-sm" onclick="app.filterTransactions('debit')">Spent Only</button>
+            </div>
+          </div>
+
+          <div class="transactions-list" id="transactions-list-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 7: MESSAGING & LEARNING SESSIONS
+         ======================================================================== -->
+    <section id="view-messages" class="view-panel" style="display: none;">
+      <div class="container messages-view">
+        <div class="section-header" style="text-align: left; max-width: 100%; margin-bottom: 1.5rem;">
+          <span class="section-tag"><i data-lucide="message-square"></i> Peer Workspace</span>
+          <h1 class="section-title">Messages & Learning Sessions</h1>
+          <p class="section-desc">Coordinate swap agendas, schedule calendar meetings, and join virtual pair rooms.</p>
+        </div>
+
+        <div class="chat-sessions-layout">
+          <!-- Left: Contacts Sidebar -->
+          <div class="chat-sidebar">
+            <div class="chat-sidebar-head">
+              <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Matched Peers</h4>
+              <input type="text" placeholder="Search conversations..." class="form-input" style="padding: 0.5rem 0.85rem; font-size: 0.85rem;">
+            </div>
+            <div class="chat-users-list" id="chat-users-list">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Center: Active Chat Window -->
+          <div class="chat-window">
+            <div class="chat-window-head">
+              <div class="chat-active-partner">
+                <img src="" alt="Active Partner" id="chat-header-avatar" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                <div>
+                  <h4 id="chat-header-name" style="font-size: 1rem; font-weight: 700;">David Chen</h4>
+                  <p id="chat-header-role" style="font-size: 0.78rem; color: var(--accent-emerald);">● Online • UI/UX Specialist</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm" onclick="app.openScheduleSessionModal(app.activeChatPartnerId)">
+                  <i data-lucide="calendar"></i> Schedule Session
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="app.launchVirtualRoom()">
+                  <i data-lucide="video"></i> Join Virtual Room
+                </button>
+              </div>
+            </div>
+
+            <div class="chat-body-messages" id="chat-messages-container">
+              <!-- Rendered by JS -->
+            </div>
+
+            <div class="chat-input-bar">
+              <input type="text" id="chat-input" class="chat-input-field" placeholder="Type a message (e.g. Can we review React hooks on Sunday?)..." onkeypress="if(event.key === 'Enter') app.sendChatMessage()">
+              <button class="btn btn-primary" onclick="app.sendChatMessage()">
+                <i data-lucide="send"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Scheduled Sessions Sidebar -->
+          <div class="chat-sessions-sidebar">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+              <h4 style="font-size: 0.95rem; font-weight: 700;">Scheduled Agenda</h4>
+              <button class="btn btn-sm" style="color: var(--primary);" onclick="app.openScheduleSessionModal()">+ New</button>
+            </div>
+            <div id="messages-agenda-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 8: AI PERSONALIZED LEARNING PATHS
+         ======================================================================== -->
+    <section id="view-learning-paths" class="view-panel" style="display: none;">
+      <div class="container learning-paths-view">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="git-branch"></i> AI Curated Curriculum</span>
+          <h1 class="section-title">Personalized Learning Paths</h1>
+          <p class="section-desc">Structured milestones powered by AI. Check off goals and connect directly with mentors for each specific topic.</p>
+        </div>
+
+        <div class="path-selector-grid" id="path-selector-cards">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div class="path-timeline-container" id="path-timeline-view">
+          <!-- Active Path Timeline populated by JS -->
+        </div>
+
+        <!-- Custom Path Generator Box -->
+        <div class="ai-simulator-box" style="margin-top: 2.5rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="sparkles" style="color: var(--primary);"></i> AI Custom Roadmap Generator
+          </h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Want to learn something unique (e.g. Prompt Engineering, Mobile Flutter, Color Grading)? Generate a step-by-step roadmap now.
+          </p>
+          <div style="display: flex; gap: 0.75rem;">
+            <input type="text" id="custom-path-input" class="form-input" placeholder="Enter target skill or career role (e.g. 3D Blender Animation, Go Backend)..." style="flex: 1;">
+            <button class="btn btn-primary" onclick="app.generateCustomPath()">Generate Roadmap</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 9: COMMUNITY FORUM & STUDY BUDDY MATCHER
+         ======================================================================== -->
+    <section id="view-community" class="view-panel" style="display: none;">
+      <div class="container community-view">
+        <div class="section-header" style="text-align: left; max-width: 100%; margin-bottom: 2rem;">
+          <span class="section-tag"><i data-lucide="users"></i> Community Lounge</span>
+          <h1 class="section-title">SkillSwap Community Hub</h1>
+          <p class="section-desc">Share insights, ask for study partners, discover free resources, and find peers on the same journey.</p>
+        </div>
+
+        <div class="community-layout-grid">
+          <!-- Left: Feed & Post Composer -->
+          <div>
+            <div class="post-composer-box">
+              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Create a Community Post</h3>
+              <div class="form-group">
+                <input type="text" id="new-post-title" class="form-input" placeholder="Title (e.g. Looking for a React study partner / Free Figma Tokens Guide)...">
+              </div>
+              <div class="form-group">
+                <textarea id="new-post-content" class="form-textarea" rows="3" placeholder="Share your insights, study request, or resources with the community..."></textarea>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <select id="new-post-category" class="form-select" style="width: auto;">
+                  <option value="Programming">💻 Programming</option>
+                  <option value="Design">🎨 Design</option>
+                  <option value="Marketing">📈 Marketing</option>
+                  <option value="Photography">📷 Photography</option>
+                  <option value="Video Editing">🎬 Video Editing</option>
+                  <option value="Business">💼 Business</option>
+                </select>
+                <button class="btn btn-primary btn-sm" onclick="app.publishCommunityPost()">
+                  <i data-lucide="send"></i> Post to Community
+                </button>
+              </div>
+            </div>
+
+            <!-- Feed Filter Chips -->
+            <div class="category-filter-chips" style="margin-bottom: 1.5rem;" id="community-category-filter">
+              <button class="filter-chip active" data-cat="all" onclick="app.filterCommunityPosts('all')">All Posts</button>
+              <button class="filter-chip" data-cat="Programming" onclick="app.filterCommunityPosts('Programming')">Programming</button>
+              <button class="filter-chip" data-cat="Design" onclick="app.filterCommunityPosts('Design')">Design</button>
+              <button class="filter-chip" data-cat="Photography" onclick="app.filterCommunityPosts('Photography')">Photography</button>
+              <button class="filter-chip" data-cat="Video Editing" onclick="app.filterCommunityPosts('Video Editing')">Video</button>
+            </div>
+
+            <div class="community-posts-list" id="community-posts-container">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Right: Community Clubs & Study Buddy Matcher Widget -->
+          <div>
+            <div class="glass-card" style="margin-bottom: 1.5rem;">
+              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="user-check" style="color: var(--accent-emerald);"></i> Study Buddy Match
+              </h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                Match with peers studying the same topic this week for co-working accountability!
+              </p>
+              <div style="background: rgba(0,0,0,0.25); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">Elena Rostova</div>
+                <div style="font-size: 0.78rem; color: var(--text-dim);">Studying: RAG Pipelines & Gemini</div>
+                <div style="font-size: 0.75rem; color: #34d399; margin-top: 4px;">● Looking for React Partner</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="app.openChat('user-elena')">
+                <i data-lucide="message-circle"></i> Message Elena
+              </button>
+            </div>
+
+            <div class="glass-card">
+              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Active Skill Guilds</h3>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem;">
+                  <span>💻 Frontend Guild</span>
+                  <span class="badge badge-subtle">420 peers</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem;">
+                  <span>🎨 Design Systems Club</span>
+                  <span class="badge badge-subtle">312 peers</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem;">
+                  <span>🤖 AI Engineers Circle</span>
+                  <span class="badge badge-subtle">580 peers</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem;">
+                  <span>🎬 Creator Studio</span>
+                  <span class="badge badge-subtle">195 peers</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         VIEW 10: LEADERBOARD
+         ======================================================================== -->
+    <section id="view-leaderboard" class="view-panel" style="display: none;">
+      <div class="container leaderboard-view">
+        <div class="section-header">
+          <span class="section-tag"><i data-lucide="trophy"></i> Hall of Fame</span>
+          <h1 class="section-title">Community Leaderboard</h1>
+          <p class="section-desc">Recognizing top contributors, mentors, and skill explorers sharing knowledge with the world.</p>
+        </div>
+
+        <!-- Top 3 Podium -->
+        <div class="podium-container" id="leaderboard-podium">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Full Leaderboard Table -->
+        <div class="leaderboard-table-card">
+          <table class="lb-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Contributor</th>
+                <th>Skills Taught</th>
+                <th>Hours Taught</th>
+                <th>Credits Earned</th>
+                <th>Completed Swaps</th>
+                <th>Honor Badge</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-table-body">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       Global Footer
+       ========================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="nav-brand" style="margin-bottom: 1rem;">
+            <div class="brand-icon"><i data-lucide="repeat"></i></div>
+            <span>Skill<span class="text-gradient">Swap</span></span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; max-width: 320px;">
+            The decentralized peer-to-peer knowledge exchange where expertise is your currency. Learn anything. Teach what you love.
+          </p>
+        </div>
+        <div>
+          <h4>Platform</h4>
+          <ul class="footer-links">
+            <li><a href="#discover" onclick="app.navigate('discover')">Browse Skills</a></li>
+            <li><a href="#matches" onclick="app.navigate('matches')">AI Matching Engine</a></li>
+            <li><a href="#credits" onclick="app.navigate('credits')">Skill Credit System</a></li>
+            <li><a href="#learning-paths" onclick="app.navigate('learning-paths')">Learning Paths</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Community</h4>
+          <ul class="footer-links">
+            <li><a href="#community" onclick="app.navigate('community')">Community Lounge</a></li>
+            <li><a href="#leaderboard" onclick="app.navigate('leaderboard')">Leaderboard</a></li>
+            <li><a href="#dashboard" onclick="app.navigate('dashboard')">Member Dashboard</a></li>
+            <li><a href="#" onclick="app.openAuthModal('signup')">Sign Up (50 Bonus Credits)</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Core Principle</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+            "Knowledge is an infinite asset that multiplies when shared. We believe high-tier education should never depend on financial privilege."
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 SkillSwap Platform. Built for Hackathons & Peer Education.</span>
+        <span>Designed with Vanilla HTML5, CSS3 & JavaScript</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       MODALS SYSTEM
+       ========================================================================== -->
+
+  <!-- Modal 1: Request Skill Swap Proposal -->
+  <div class="modal-overlay" id="modal-request-swap">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Request Skill Swap</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modal-request-swap')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; background: rgba(0,0,0,0.25); padding: 1rem; border-radius: var(--radius-md);">
+          <img src="" alt="Target Mentor" id="modal-req-target-avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+          <div>
+            <h4 id="modal-req-target-name" style="font-size: 1.05rem; font-weight: 700;">David Chen</h4>
+            <p id="modal-req-target-rate" style="font-size: 0.8rem; color: #fbbf24; font-weight: 600;">10 ⚡ Skill Credits / hour</p>
+          </div>
+        </div>
+
+        <form id="form-request-swap" onsubmit="event.preventDefault(); app.submitSwapRequest();">
+          <div class="form-group">
+            <label class="form-label">Skill You Want To Learn From Them</label>
+            <select id="modal-req-learn-skill" class="form-select" required>
+              <!-- Filled dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Skill You Offer In Exchange (From Your Skills)</label>
+            <select id="modal-req-teach-skill" class="form-select" required>
+              <!-- Filled dynamically -->
+            </select>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Proposed Date</label>
+              <input type="date" id="modal-req-date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Proposed Time</label>
+              <input type="time" id="modal-req-time" class="form-input" value="15:00" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Personal Note / Session Goals</label>
+            <textarea id="modal-req-note" class="form-textarea" rows="3" placeholder="Tell them what you'd like to accomplish during this swap..."></textarea>
+          </div>
+
+          <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; color: #fbbf24; margin-bottom: 1.5rem;">
+            ⚡ <strong>10 Skill Credits</strong> will be staked from your wallet upon session completion.
+          </div>
+
+          <div class="modal-footer" style="padding: 0;">
+            <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-request-swap')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Send Swap Proposal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: User Full Profile Details -->
+  <div class="modal-overlay" id="modal-user-profile">
+    <div class="modal-content" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3>Member Profile</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modal-user-profile')">✕</button>
+      </div>
+      <div class="modal-body" id="modal-user-profile-body">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Schedule Learning Session -->
+  <div class="modal-overlay" id="modal-schedule-session">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Schedule Learning Session</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modal-schedule-session')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-schedule-session" onsubmit="event.preventDefault(); app.submitScheduleSession();">
+          <div class="form-group">
+            <label class="form-label">Select Peer Partner</label>
+            <select id="modal-sched-partner" class="form-select" required>
+              <!-- Filled dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subject / Skill Topic</label>
+            <input type="text" id="modal-sched-topic" class="form-input" placeholder="e.g. React Custom Hooks and Memoization" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Date</label>
+              <input type="date" id="modal-sched-date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Time</label>
+              <input type="time" id="modal-sched-time" class="form-input" value="16:00" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Meeting Format</label>
+            <select id="modal-sched-format" class="form-select">
+              <option value="Online (Virtual Room)">Online (SkillSwap Virtual Room)</option>
+              <option value="In-person">In-Person Meetup</option>
+            </select>
+          </div>
+
+          <div class="modal-footer" style="padding: 0; margin-top: 1.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-schedule-session')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Confirm & Book Session</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Virtual Learning Room (Simulated 1-on-1 Call) -->
+  <div class="modal-overlay" id="modal-virtual-room">
+    <div class="modal-content" style="max-width: 820px; background: #0b0f19;">
+      <div class="modal-header" style="background: #111827;">
+        <div>
+          <span class="badge badge-emerald">● Live Session Active</span>
+          <h3 id="room-header-title" style="margin-top: 4px;">Virtual Pair Learning: React & UI/UX</h3>
+        </div>
+        <button class="modal-close-btn" onclick="app.closeModal('modal-virtual-room')">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;">
+        <div class="virtual-room-window">
+          <div class="room-video-stage">
+            <div class="mock-feed">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80" alt="You">
+              <span class="feed-name-tag">You (Maya Lin) 🎙️</span>
+            </div>
+            <div class="mock-feed">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80" alt="Peer">
+              <span class="feed-name-tag">David Chen 🎙️</span>
+            </div>
+          </div>
+          <div class="room-controls-bar">
+            <button class="btn btn-secondary btn-sm"><i data-lucide="mic"></i> Mute</button>
+            <button class="btn btn-secondary btn-sm"><i data-lucide="video"></i> Video</button>
+            <button class="btn btn-secondary btn-sm"><i data-lucide="share-2"></i> Screen Share</button>
+            <button class="btn btn-accent btn-sm" onclick="app.finishSessionFromCall()">
+              <i data-lucide="check-circle"></i> End Session & Transfer 10 ⚡
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem; background: rgba(255,255,255,0.03); padding: 1rem; border-radius: var(--radius-md);">
+          <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem;">Collaborative Session Notes</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">
+            • Discussed token naming conventions: `color.brand.primary` vs `color.surface.bg`<br>
+            • Reviewed React custom hook: `useDarkMode()` and memoized token provider
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Add / Offer Skill Modal -->
+  <div class="modal-overlay" id="modal-offer-skill">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Offer a New Skill to Teach</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modal-offer-skill')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-offer-skill" onsubmit="event.preventDefault(); app.submitNewSkillTeach();">
+          <div class="form-group">
+            <label class="form-label">Skill Name</label>
+            <input type="text" id="offer-skill-name" class="form-input" placeholder="e.g. Next.js, Figma, SQL, Blender..." required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select id="offer-skill-category" class="form-select">
+              <option value="Programming">Programming</option>
+              <option value="Design">Design</option>
+              <option value="Video & Media">Video & Media</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Photography">Photography</option>
+              <option value="Business">Business</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Proficiency Level</label>
+            <select id="offer-skill-level" class="form-select">
+              <option value="Advanced">Advanced (Expert / Professional)</option>
+              <option value="Intermediate">Intermediate (Comfortable Practitioner)</option>
+              <option value="Beginner">Beginner (Foundational)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Years of Experience</label>
+            <input type="number" id="offer-skill-years" class="form-input" value="3" min="1" max="25" required>
+          </div>
+          <div class="modal-footer" style="padding: 0; margin-top: 1.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-offer-skill')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Add Skill to My Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Add Learning Goal Skill Modal -->
+  <div class="modal-overlay" id="modal-add-learning-skill">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Skill You Want to Learn</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modal-add-learning-skill')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-add-learning-skill" onsubmit="event.preventDefault(); app.submitNewSkillLearn();">
+          <div class="form-group">
+            <label class="form-label">Skill Target</label>
+            <input type="text" id="learn-skill-name" class="form-input" placeholder="e.g. Python Machine Learning, Design Systems..." required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select id="learn-skill-category" class="form-select">
+              <option value="Design">Design</option>
+              <option value="Programming">Programming</option>
+              <option value="Video & Media">Video & Media</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Photography">Photography</option>
+              <option value="Business">Business</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Desired Mastery Level</label>
+            <select id="learn-skill-target-level" class="form-select">
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+              <option value="Beginner">Beginner</option>
+            </select>
+          </div>
+          <div class="modal-footer" style="padding: 0; margin-top: 1.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-add-learning-skill')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Learning Goal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 7: User Authentication (Login & Sign Up) -->
+  <div class="modal-overlay" id="modal-auth">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 id="auth-modal-title">Create Your SkillSwap Account</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modal-auth')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
+          <button class="tab-btn active" id="auth-tab-signup" onclick="app.switchAuthTab('signup')">Sign Up (50 Bonus Credits)</button>
+          <button class="tab-btn" id="auth-tab-login" onclick="app.switchAuthTab('login')">Log In</button>
+        </div>
+
+        <!-- Registration Form -->
+        <form id="form-auth-signup" onsubmit="event.preventDefault(); app.handleSignupSubmit();">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="reg-name" class="form-input" placeholder="e.g. Alex Rivera" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Location *</label>
+              <input type="text" id="reg-location" class="form-input" placeholder="City or Remote" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Preferred Format</label>
+              <select id="reg-format" class="form-select">
+                <option value="Online">Online</option>
+                <option value="In-person">In-person</option>
+                <option value="Online & In-person">Both (Online & In-person)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Skills You Can Teach * (comma-separated)</label>
+            <input type="text" id="reg-skills-teach" class="form-input" placeholder="e.g. React, TypeScript, CSS" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Skills You Want to Learn * (comma-separated)</label>
+            <input type="text" id="reg-skills-learn" class="form-input" placeholder="e.g. UI/UX Design, Figma" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Skill Level</label>
+              <select id="reg-level" class="form-select">
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Beginner">Beginner</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Availability</label>
+              <select id="reg-availability" class="form-select">
+                <option value="Weekends & Evenings">Weekends & Evenings</option>
+                <option value="Weekday Evenings">Weekday Evenings</option>
+                <option value="Flexible">Flexible Anytime</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Profile Photo Preset</label>
+            <select id="reg-photo-preset" class="form-select">
+              <option value="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80">Avatar 1 (Product Lead)</option>
+              <option value="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=250&q=80">Avatar 2 (Creative Designer)</option>
+              <option value="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=250&q=80">Avatar 3 (Data Scientist)</option>
+              <option value="https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=250&q=80">Avatar 4 (Developer)</option>
+            </select>
+          </div>
+
+          <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; color: #34d399; margin-bottom: 1.25rem;">
+            🎁 <strong>Welcome Bonus:</strong> 50 free Skill Credits will be credited to your new wallet immediately!
+          </div>
+
+          <div class="modal-footer" style="padding: 0;">
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account & Start Swapping</button>
+          </div>
+        </form>
+
+        <!-- Login Form -->
+        <form id="form-auth-login" style="display: none;" onsubmit="event.preventDefault(); app.handleLoginSubmit();">
+          <div class="form-group">
+            <label class="form-label">Quick Demo Login As:</label>
+            <div style="display: flex; flex-direction: column; gap: 0.65rem;" id="login-preset-accounts">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </form>
+  <!-- Modal 8: Change Profile Photo & Edit Profile -->
+  <div class="modal-overlay" id="modal-edit-profile-photo">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3>Change Profile Photo</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('modal-edit-profile-photo')">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- Live Photo Preview -->
+        <div class="photo-preview-large-wrap">
+          <img src="" alt="Profile Preview" id="edit-photo-preview" class="photo-preview-large">
+          <div>
+            <div style="font-weight: 700; font-size: 1.05rem;" id="edit-photo-user-name">Maya Lin</div>
+            <div style="font-size: 0.8rem; color: var(--text-dim);" id="edit-photo-user-role">React Specialist</div>
+          </div>
+        </div>
+
+        <!-- Option A: Upload from Device -->
+        <div class="form-group">
+          <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="upload" style="font-size: 0.95rem; color: var(--primary);"></i>
+            Upload Image From Your Computer / Device
+          </label>
+          <input type="file" id="edit-photo-file-input" class="form-input" accept="image/*" onchange="app.handlePhotoFileUpload(event)" style="padding: 0.55rem;">
+          <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 4px;">Supports PNG, JPG, GIF, WebP (Converted instantly)</p>
+        </div>
+
+        <!-- Option B: Enter Image URL -->
+        <div class="form-group">
+          <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="link" style="font-size: 0.95rem; color: var(--accent-emerald);"></i>
+            Or Paste Custom Image URL
+          </label>
+          <input type="url" id="edit-photo-url-input" class="form-input" placeholder="https://images.unsplash.com/... or any web link" oninput="app.handlePhotoUrlInput(event)">
+        </div>
+
+        <!-- Option C: Choose From Avatar Preset Gallery -->
+        <div class="form-group">
+          <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="sparkles" style="font-size: 0.95rem; color: var(--currency-gold);"></i>
+            Or Pick From Avatar Presets
+          </label>
+          <div class="avatar-presets-grid" id="avatar-presets-grid">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 1rem 0 0; margin-top: 1.5rem; border-top: 1px solid var(--border-subtle);">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-edit-profile-photo')">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="app.saveProfilePhoto()">Save Profile Photo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
